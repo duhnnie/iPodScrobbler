@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "LastFM.swift",
+        "repositoryURL": "https://github.com/duhnnie/LastFM.swift",
+        "state": {
+          "branch": null,
+          "revision": "065bad30c3b1590e7fa3b7bb8a2b77571111cd9b",
+          "version": "1.3.0"
+        }
+      },
+      {
+        "package": "SwiftRestClient",
+        "repositoryURL": "https://github.com/duhnnie/SwiftRestClient",
+        "state": {
+          "branch": null,
+          "revision": "f6828e84d000aa9fc05137ce459d0013e3474831",
+          "version": "0.5.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
