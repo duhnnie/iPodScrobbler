@@ -40,12 +40,14 @@ let sortedPlayedTracks: [PlayCountsDB.TrackPlayCount] = playedTracks.sorted { tr
     return partialResult
 }
 
-let lastFM = LastFM(apiKey: "SOME_API", apiSecret: "SOME_SECRET")
-let sessionKey = "SOME_SESSION"
+let lastFM = LastFM(apiKey: "7c7122a665cd094a27b30ed568b1d22f", apiSecret: "ffbbc1e211fbe62e2f006c0821d1bf5f")
+let sessionKey = "XNzCkbhBuY9EtwPjjrySL5DxgcuuvqeM"
 var scrobbleParams = ScrobbleParams()
+// 2024-09-05 11:05:44 +0000
+let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2024, month: 11, day: 07, hour: 21, minute: 01, second: 11).date!.timeIntervalSince1970 + 2082844800
 
 for (track, playcount) in sortedPlayedTracks {
-    if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) {
+    if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) || playcount.lastPlayed <= UInt32(lastScrobble) {
         continue
     }
     
