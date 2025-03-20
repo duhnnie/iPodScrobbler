@@ -2,6 +2,10 @@ import Foundation
 import iPodReader
 import LastFM
 
+var preferencesFileURL = URL(fileURLWithPath: "/users/daniel/Documents", isDirectory: true)
+preferencesFileURL.appendPathComponent("iPodReaderProject", isDirectory: true)
+preferencesFileURL.appendPathComponent("Preferences", isDirectory: false)
+
 var playCountsFileURL = URL(fileURLWithPath: "/users/daniel/Documents", isDirectory: true)
 playCountsFileURL.appendPathComponent("iPodReaderProject", isDirectory: true)
 playCountsFileURL.appendPathComponent("Play Counts", isDirectory: false)
@@ -9,6 +13,9 @@ playCountsFileURL.appendPathComponent("Play Counts", isDirectory: false)
 var fileURL = URL(fileURLWithPath: "/users/daniel/Documents", isDirectory: true)
 fileURL.appendPathComponent("iPodReaderProject", isDirectory: true)
 fileURL.appendPathComponent("iTunesDB", isDirectory: false)
+
+let preferences = try iPodReader.Preferences(fileURL: preferencesFileURL)
+print("offset: \(preferences.timeOffsetInSeconds)")
 
 let iTunesDB = try iPodReader.ITunesDB(fileURL: fileURL)
 let playCountsDB = try iPodReader.PlayCountsDB(fileURL: playCountsFileURL)
@@ -40,11 +47,11 @@ let sortedPlayedTracks: [PlayCountsDB.TrackPlayCount] = playedTracks.sorted { tr
     return partialResult
 }
 
-let lastFM = LastFM(apiKey: "7c7122a665cd094a27b30ed568b1d22f", apiSecret: "ffbbc1e211fbe62e2f006c0821d1bf5f")
-let sessionKey = "XNzCkbhBuY9EtwPjjrySL5DxgcuuvqeM"
+let lastFM = LastFM(apiKey: "x", apiSecret: "y")
+let sessionKey = "a"
 var scrobbleParams = ScrobbleParams()
 // 2024-09-05 11:05:44 +0000
-let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2024, month: 11, day: 07, hour: 21, minute: 01, second: 11).date!.timeIntervalSince1970 + 2082844800
+let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2025, month: 3, day: 19, hour: 21, minute: 13, second: 07).date!.timeIntervalSince1970 + 2082844800
 
 for (track, playcount) in sortedPlayedTracks {
     if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) || playcount.lastPlayed <= UInt32(lastScrobble) {
