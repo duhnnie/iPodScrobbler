@@ -2,6 +2,8 @@ import Foundation
 import iPodReader
 import LastFM
 
+let semaphore = DispatchSemaphore(value: 0)
+
 var preferencesFileURL = URL(fileURLWithPath: "/users/daniel/Documents", isDirectory: true)
 preferencesFileURL.appendPathComponent("iPodReaderProject", isDirectory: true)
 preferencesFileURL.appendPathComponent("Preferences", isDirectory: false)
@@ -47,11 +49,11 @@ let sortedPlayedTracks: [PlayCountsDB.TrackPlayCount] = playedTracks.sorted { tr
     return partialResult
 }
 
-let lastFM = LastFM(apiKey: "x", apiSecret: "y")
-let sessionKey = "a"
+let lastFM = LastFM(apiKey: "API_KEY", apiSecret: "API_SECRET")
+let sessionKey = "SESSION_KEY"
 var scrobbleParams = ScrobbleParams()
 // 2024-09-05 11:05:44 +0000
-let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2025, month: 3, day: 19, hour: 21, minute: 13, second: 07).date!.timeIntervalSince1970 + 2082844800
+let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2025, month: 4, day: 18, hour: 20, minute: 21, second: 57).date!.timeIntervalSince1970 + 2082844800
 
 for (track, playcount) in sortedPlayedTracks {
     if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) || playcount.lastPlayed <= UInt32(lastScrobble) {
@@ -104,8 +106,11 @@ for (track, playcount) in sortedPlayedTracks {
             case .failure(let error):
                 print("error for \(tracksToScrobble) : \(error)")
             }
+            
+            semaphore.signal()
         }
     
+        semaphore.wait()
         scrobbleParams.clearItems()
     }
 }
@@ -124,7 +129,9 @@ if scrobbleParams.count > 0 {
             print("error for \(tracksToScrobble) : \(error)")
         }
 
+        semaphore.signal()
     }
 }
 
-RunLoop.main.run()
+semaphore.wait()
+print("Program ended")

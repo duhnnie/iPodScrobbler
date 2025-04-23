@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "iPodReader",
+        "repositoryURL": "https://github.com/duhnnie/iPodReader",
+        "state": {
+          "branch": "main",
+          "revision": "b2dd186e83ce3b6f1472214ac8876f8e6d415ac0",
+          "version": null
+        }
+      },
+      {
         "package": "LastFM.swift",
         "repositoryURL": "https://github.com/duhnnie/LastFM.swift",
         "state": {
