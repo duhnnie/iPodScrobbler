@@ -53,10 +53,13 @@ let lastFM = LastFM(apiKey: "API_KEY", apiSecret: "API_SECRET")
 let sessionKey = "SESSION_KEY"
 var scrobbleParams = ScrobbleParams()
 // 2024-09-05 11:05:44 +0000
-let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2025, month: 4, day: 18, hour: 20, minute: 21, second: 57).date!.timeIntervalSince1970 + 2082844800
+let lastScrobble = DateComponents(calendar: .current, timeZone: .init(secondsFromGMT: 0), year: 2025, month: 4, day: 25, hour: 3, minute: 28, second: 37).date!
 
 for (track, playcount) in sortedPlayedTracks {
-    if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) || playcount.lastPlayed <= UInt32(lastScrobble) {
+    let rawDate = Date(timeIntervalSince1970: TimeInterval(playcount.lastPlayed - 2082844800))
+    let lastPlayed = rawDate.addingTimeInterval(TimeInterval(TimeZone.current.secondsFromGMT()) * -1)
+    
+    if ![TrackItem.MediaType.Audio, TrackItem.MediaType.MusicVideo].contains(track.mediaType) || lastPlayed <= lastScrobble {
         continue
     }
     
@@ -70,8 +73,6 @@ for (track, playcount) in sortedPlayedTracks {
         exit(EX_OK)
     }
     
-    let rawDate = Date(timeIntervalSince1970: TimeInterval(playcount.lastPlayed - 2082844800))
-    let lastPlayed = rawDate.addingTimeInterval(TimeInterval(TimeZone.current.secondsFromGMT()) * -1)
     let album = trackStrings.first { $0.type == DataObject.DataObjectType.album }
     let albumArtist = trackStrings.first { $0.type == DataObject.DataObjectType.albumArtist }
     
@@ -106,7 +107,7 @@ for (track, playcount) in sortedPlayedTracks {
             case .failure(let error):
                 print("error for \(tracksToScrobble) : \(error)")
             }
-            
+
             semaphore.signal()
         }
     
@@ -131,7 +132,8 @@ if scrobbleParams.count > 0 {
 
         semaphore.signal()
     }
+    
+    semaphore.wait()
 }
 
-semaphore.wait()
 print("Program ended")
